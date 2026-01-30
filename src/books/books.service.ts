@@ -51,8 +51,27 @@ export class BooksService {
     };
   }
 
-  getAllBooks() {
-    const booksData = this.books.map((book) => ({
+  getAllBooks(query: { name?: string; reading?: number; finished?: number }) {
+    let filterBook = this.books;
+
+    if (query.name) {
+      const keyword = query.name.toLowerCase();
+      filterBook = filterBook.filter((book) =>
+        book.name.toLowerCase().includes(keyword),
+      );
+    }
+    if (query.reading !== undefined) {
+      filterBook = filterBook.filter(
+        (book) => Number(book.reading) === Number(query.reading),
+      );
+    }
+    if (query.finished !== undefined) {
+      filterBook = filterBook.filter(
+        (book) => book.finished === (Number(query.finished) === 1),
+      );
+    }
+
+    const booksData = filterBook.map((book) => ({
       id: book.id,
       name: book.name,
       publisher: book.publisher,
