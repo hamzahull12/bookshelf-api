@@ -65,4 +65,69 @@ export class BooksService {
       },
     };
   }
+
+  getBookById(id: string) {
+    const book = this.books.find((b) => b.id === id);
+    if (!book) {
+      throw new HttpException(
+        {
+          status: 'fail',
+          message: 'Buku tidak ditemukan',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return {
+      status: 'success',
+      data: { book },
+    };
+  }
+
+  editBookById(id: string, updateDto: CreateBookDto) {
+    const { name, readPage, pageCount } = updateDto;
+
+    if (!name) {
+      throw new HttpException(
+        {
+          status: 'fail',
+          message: 'Gagal memperbarui buku. Mohon isi nama buku',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (readPage > pageCount) {
+      throw new HttpException(
+        {
+          status: 'fail',
+          message:
+            'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const index = this.books.findIndex((book) => book.id === id);
+    if (index === -1) {
+      throw new HttpException(
+        {
+          status: 'fail',
+          message: 'Gagal memperbarui buku. Id tidak ditemukan',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const timestamp = new Date().toDateString();
+    this.books[index] = {
+      ...this.books[index],
+      ...updateDto,
+      finished: updateDto.pageCount === updateDto.readPage,
+      updatedAt: timestamp,
+    };
+    return {
+      status: 'success',
+      message: 'Buku berhasil diperbarui',
+    };
+  }
 }
