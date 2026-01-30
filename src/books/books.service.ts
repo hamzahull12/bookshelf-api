@@ -130,4 +130,24 @@ export class BooksService {
       message: 'Buku berhasil diperbarui',
     };
   }
+
+  deleteBookById(id: string) {
+    const index = this.books.findIndex((book) => book.id === id);
+
+    if (index === -1) {
+      throw new HttpException(
+        {
+          status: 'fail',
+          message: 'Buku gagal dihapus. Id tidak ditemukan',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    this.books.splice(index, 1);
+    return {
+      status: 'success',
+      message: 'Buku berhasil dihapus',
+    };
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -34,5 +35,10 @@ export class BooksController {
   @Put(':id')
   putBookById(@Param('id') id: string, @Body() updateDto: CreateBookDto) {
     return this.booksService.editBookById(id, updateDto);
+  }
+
+  @Delete(':id')
+  deleteBookByid(@Param('id') id: string) {
+    return this.booksService.deleteBookById(id);
   }
 }
